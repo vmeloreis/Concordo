@@ -1,0 +1,3 @@
+C:/Users/Thiag/Documents/ufrn/lp1/Concordo/build/CMakeFiles/concordo.dir
+C:/Users/Thiag/Documents/ufrn/lp1/Concordo/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Thiag/Documents/ufrn/lp1/Concordo/build/CMakeFiles/ZERO_CHECK.dir

@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.16.3)
+project(concordo)
+include_directories(src)
+
+add_executable(concordo src/main.cpp src/system.cpp include/channel.hpp  include/message.hpp  include/server.hpp  include/system.hpp  include/textChannel.hpp  include/user.hpp  include/voiceChannel.hpp )

@@ -1,0 +1,11 @@
+create-user vini@gmail.com senha05 vini melo
+login vini@gmail.com senha05
+create-server serverTeste
+set-server-desc serverTeste "This is a test server"
+set-server-invitecode serverTeste 0505
+list-servers
+enter-server serverTeste
+list-participants
+leave-server
+disconnect
+quit
