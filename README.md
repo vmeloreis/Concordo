@@ -1,16 +1,16 @@
 # Concordo
 UFRN-LP1 PROJECT
 
-#Identificação
+# Identificação
 - Vinicius Melo Reis Do Nascimento
 
-#Como compilar e rodar o programa
+# Como compilar e rodar o programa
 -Tenha o cmake instalado em seu ambiente
 -Navegue até o diretorio raiz do projeto e digite o seguinte comando: cmake . -B build cd build make 
 -Ou navegue até a pasta build e digite o seguinte comando: make
 
 
-#Funcionalidades
+# Funcionalidades
 create-user <email> <password> <name> -- cria um usuario novo
 login <email> <password> -- faz login no sistema
 create-server <name> -- cria um servidor novo
