@@ -4,6 +4,10 @@ UFRN-LP1 PROJECT
 # Identificação
 - Vinicius Melo Reis Do Nascimento
 
+# Resumo
+- Esse é um projeto que simula as aplicações do aplicativo discord em formato de comandos, os comandos aplicados e classes implementadas foram apenas em volta da parte 1 do projeto, logo não está completo.
+
+
 # Como compilar e rodar o programa
 - Tenha o cmake instalado em seu ambiente
 - Navegue até o diretorio raiz do projeto e digite o seguinte comando: cmake . -B build cd build make 
@@ -32,3 +36,5 @@ leave-server -- lista todos os servers
 disconnect -- desconecta o usuario
 
 quit -- fecha a aplicação
+
+
