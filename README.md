@@ -5,9 +5,9 @@ UFRN-LP1 PROJECT
 - Vinicius Melo Reis Do Nascimento
 
 # Como compilar e rodar o programa
--Tenha o cmake instalado em seu ambiente
--Navegue até o diretorio raiz do projeto e digite o seguinte comando: cmake . -B build cd build make 
--Ou navegue até a pasta build e digite o seguinte comando: make
+- Tenha o cmake instalado em seu ambiente
+- Navegue até o diretorio raiz do projeto e digite o seguinte comando: cmake . -B build cd build make 
+- Ou navegue até a pasta build e digite o seguinte comando: make
 
 
 # Funcionalidades
