@@ -33,6 +33,18 @@ list-participants -- lista os participantes de um servidor
 
 leave-server -- lista todos os servers
 
+create-channel -- cria um canal novo
+
+list-channel -- lista os canais 
+
+enter-channel -- entre em um canal
+
+leave-channel -- sai de um canal
+
+send-message -- envia uma mensagem
+
+list-messages lista todas as mensagens
+
 disconnect -- desconecta o usuario
 
 quit -- fecha a aplicação
