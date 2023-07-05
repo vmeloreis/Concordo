@@ -89,6 +89,38 @@ int main()
         {
             system.GetAllUsersServer();
         }
+        else if (command == "create-channel")
+        {
+            std::string name, type;
+            iss >> name >> type;
+            system.GetCurrentServer()->CreateChannel(name, type);
+        }
+        else if (command == "list-channels")
+        {
+            system.GetCurrentServer()->ListAllChannels();
+        }
+
+        else if (command == "enter-channel")
+        {
+            std::string name;
+            iss >> name;
+            system.EnterChannel(name);
+        }
+        else if (command == "leave-channel")
+        {
+            system.LeaveChannel();
+        }
+        else if (command == "send-message")
+        {
+            std::string message;
+            std::getline(iss, message);
+            message = message.substr(1, message.length() - 2);
+            system.SendMessage(message);
+        }
+        else if (command == "list-messages")
+        {
+            system.ViewAllMessages();
+        }
         else
         {
             std::cout << "Comando inválido: " << command << std::endl;

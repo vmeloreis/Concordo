@@ -17,6 +17,14 @@ private:
     Channel *currentChannel;        /** ponteiro apontado para o canal atual*/
 
 public:
+    Server *GetCurrentServer()
+    {
+        return currentServer;
+    }
+    std::vector<Server> &GetServer()
+    {
+        return allServers;
+    }
     /**
      * @brief Construtor do objeto, inicializa as variaveis como nula logo que um sistema foi recém criado
      *
@@ -129,6 +137,28 @@ public:
      * @return User*
      */
     User *GetUserByID(int id);
+    /**
+     * @brief função para entrar em um canal baseado em seu nome
+     *
+     * @param name nome do canal a entrar
+     */
+    void EnterChannel(std::string name);
+    /**
+     * @brief sai do canal atual, seta a variavel responsavel pelo canal atual para nulo
+     *
+     */
+    void LeaveChannel();
+    /**
+     * @brief cria uma mensagem para ser armazenado no vetor de mensagens do text channel
+     *
+     * @param message mensagem a ser enviada
+     */
+    void SendMessage(std::string message);
+    /**
+     * @brief lista todas as mensagens digitadas
+     *
+     */
+    void ViewAllMessages();
 };
 
 #endif

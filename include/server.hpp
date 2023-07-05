@@ -5,6 +5,7 @@
 #include "textChannel.hpp"
 #include "user.hpp"
 #include "voiceChannel.hpp"
+#include <iostream>
 
 /**
  * @brief classe Server para representar o servidor
@@ -110,6 +111,27 @@ public:
     void SetIniviteCode(std::string newInviteCode)
     {
         inviteCode = newInviteCode;
+    }
+    /**
+     * @brief Lista todos os canais dentro de um servidor de acordo com sua especificidade, se é de texto ou de voz
+     *
+     */
+    void ListAllChannels();
+    /**
+     * @brief Cria um canal em servidor e seta seu tipo
+     *
+     * @param name nome do canal
+     * @param type tipo do canal, texto ou voz
+     */
+    void CreateChannel(std::string name, std::string type);
+    /**
+     * @brief Retorna o objeto channels
+     *
+     * @return vetor de canais
+     */
+    std::vector<Channel *> GetChannels()
+    {
+        return channels;
     }
 };
 

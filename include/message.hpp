@@ -1,6 +1,8 @@
 #ifndef MESSAGE_HPP
 #define MESSAGE_HPP
+
 #include <string>
+#include <chrono>
 
 /**
  * @brief classe message onde as mensagens serão gerenciadas
@@ -9,29 +11,43 @@
 class Message
 {
 private:
-    std::string time;
+    std::chrono::system_clock::time_point time;
     int sentBy;
     std::string content;
 
 public:
-    Message(std::string time, int sentBy, std::string content)
+    Message(std::chrono::system_clock::time_point time, int sentBy, std::string content)
+        : time(time), sentBy(sentBy), content(content)
     {
-        this->time = time;
-        this->sentBy = sentBy;
-        this->content = content;
     }
-    Message(std::string time, int sentBy)
+
+    Message(std::chrono::system_clock::time_point time, int sentBy)
+        : time(time), sentBy(sentBy)
     {
         content = "";
-        this->sentBy = sentBy;
-        this->time = time;
     }
+
     Message()
     {
         content = "";
     }
 
     ~Message() {}
+
+    int GetAuthor()
+    {
+        return sentBy;
+    }
+
+    std::chrono::system_clock::time_point GetTime()
+    {
+        return time;
+    }
+
+    std::string GetMessage()
+    {
+        return content;
+    }
 };
 
 #endif

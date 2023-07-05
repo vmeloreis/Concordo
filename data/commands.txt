@@ -3,9 +3,14 @@ login vini@gmail.com senha05
 create-server serverTeste
 set-server-desc serverTeste "This is a test server"
 set-server-invitecode serverTeste 0505
-list-servers
 enter-server serverTeste
 list-participants
+create-channel grilos
+enter-channel grilos
+send-message oi pessoal
+list-messages
+list-servers
+leave-channel
 leave-server
 disconnect
 quit

@@ -272,3 +272,93 @@ User *MySystem::GetUserByID(int id)
 
     return nullptr;
 }
+
+void MySystem::EnterChannel(std::string name)
+{
+
+    if (currentServer == nullptr)
+    {
+        return;
+    }
+
+    if (!IsLogged())
+    {
+        std::cout << "Nao esta logado no sistema!" << std::endl;
+    }
+    for (Channel *channel : currentServer->GetChannels())
+    {
+        if (channel->GetName() == name)
+        {
+            currentChannel = channel;
+            std::cout << "Entrou no canal " << name << std::endl;
+            return;
+        }
+    }
+    std::cout << "Canal " << name << " nao existe" << std::endl;
+}
+void MySystem::LeaveChannel()
+{
+    if (currentChannel == nullptr)
+    {
+        std::cout << "Nao esta em nenhum canal" << std::endl;
+    }
+    if (!IsLogged())
+    {
+        std::cout << "Nao esta logado no sistema!" << std::endl;
+    }
+    currentChannel = nullptr;
+    std::cout << "Saindo do canal" << std::endl;
+}
+
+void MySystem::SendMessage(std::string message)
+{
+    int currentUserID = currentUser->GetID();
+
+    if (!IsLogged())
+    {
+        std::cout << "Nao esta logado no sistema!" << std::endl;
+        return;
+    }
+
+    if (currentChannel == nullptr)
+    {
+        std::cout << "Nao esta em nenhum canal" << std::endl;
+        return;
+    }
+
+    std::chrono::system_clock::time_point currentTime = std::chrono::system_clock::now();
+    Message newMessage(currentTime, currentUserID, message);
+    currentChannel->NewMessage(newMessage);
+}
+void MySystem::ViewAllMessages()
+{
+
+    TextChannel *textChannel;
+    VoiceChannel *VoiceChannel;
+    if (!IsLogged())
+    {
+        std::cout << "nao esta logado no sistema!" << std::endl;
+        return;
+    }
+    if (currentChannel == nullptr)
+    {
+        std::cout << "nao esta em nenhum canal" << std::endl;
+        return;
+    }
+    if (currentChannel->GetMessages().empty())
+    {
+        std::cout << "sem mensagens" << std::endl;
+        return;
+    }
+    for (auto x : currentChannel->GetMessages())
+    {
+        std::time_t currentTime = std::chrono::system_clock::to_time_t(x.GetTime());
+        std::string timeSent = std::ctime(&currentTime);
+
+        if (!timeSent.empty() && timeSent[timeSent.length() - 1] == '\n')
+        {
+            timeSent.erase(timeSent.length() - 1);
+        }
+        std::cout << GetUserByID(x.GetAuthor())->GetName() << "< " << timeSent << " >" << x.GetMessage() << std::endl;
+    }
+}
