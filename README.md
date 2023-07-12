@@ -5,7 +5,7 @@ UFRN-LP1 PROJECT
 - Vinicius Melo Reis Do Nascimento
 
 # Resumo
-- Esse é um projeto que simula as aplicações do aplicativo discord em formato de comandos, os comandos aplicados e classes implementadas foram apenas em volta da parte 1 e 2 do projeto, logo não está completo, algumas funcionalidades não puderam ser mostradas no arquivo main, mas existe um arquivo teste.cpp na qual está incluida o funcionamento de todos os novos comandos da parte 2, na parte 3 o arquivo main estará completo
+- Esse é um projeto que simula as aplicações do aplicativo discord em formato de comandos, os comandos aplicados e classes implementadas foram apenas em volta da parte 1 e 2 e 3 do projeto, com um menu de interação baseado em comandos, tive dificuldades em algumas funções e no arquivo.txt dos usuarios, de resto o programa está completo e funcionando normalmente.
 
 
 # Como compilar e rodar o programa
