@@ -15,6 +15,10 @@ private:
     User *currentUser;              /** ponteiro apontado para o usuario atual*/
     Server *currentServer;          /**< ponteiro apontado para o servidor atual*/
     Channel *currentChannel;        /** ponteiro apontado para o canal atual*/
+    void SaveUsers();               /**< função para salvar os usuarios do sistema */
+    void SaveServers();             /**<função para salvar os servidores do sistema*/
+    void LoadUsers();               /**<função para carregar no vetor de usuarios com as informações salvas*/
+    void LoadServers();             /**<função para carregar no vetor de servidores com as informações salvas*/
 
 public:
     Server *GetCurrentServer()
@@ -47,7 +51,7 @@ public:
      * @param password string que representa a senha
      * @param name string que representa o nome
      */
-    void CreateUser(std::string email, std::string password, std::string name);
+    void CreateUser(const std::string &email, const std::string &password, const std::string &name);
     /**
      * @brief função para entrar em um sistema, fazer login de acordo com o email e a senha, confere se existe essas informações dentro do sistema
      *
@@ -159,6 +163,17 @@ public:
      *
      */
     void ViewAllMessages();
+
+    /**
+     * @brief executa as funções de salvar privadas
+     *
+     */
+    void Save();
+    /**
+     * @brief executa as função de carregar privadas
+     *
+     */
+    void Load();
 };
 
 #endif

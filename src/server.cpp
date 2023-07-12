@@ -37,14 +37,18 @@ void Server::CreateChannel(std::string name, std::string type)
 
     if (type == "TextChannel")
     {
-        TextChannel *newTextChannel = new TextChannel(name);
+        TextChannel *newTextChannel = new TextChannel(name, type);
         channels.push_back(newTextChannel);
         std::cout << "TextChannel " << name << " Criado!" << std::endl;
     }
     else if (type == "VoiceChannel")
     {
-        VoiceChannel *newVoiceChannel = new VoiceChannel(name);
+        VoiceChannel *newVoiceChannel = new VoiceChannel(name, type);
         channels.push_back(newVoiceChannel);
         std::cout << "VoiceChannel " << name << " Criado! " << std::endl;
     }
+}
+bool Server::IsOpen() const
+{
+    return inviteCode.empty();
 }

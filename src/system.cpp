@@ -1,4 +1,6 @@
 #include "../include/system.hpp"
+#include "../include/timeUtils.hpp"
+#include <fstream>
 
 void MySystem::ExitSystem()
 {
@@ -7,46 +9,34 @@ void MySystem::ExitSystem()
 
     std::cout << "Saindo Do Concordo";
 }
-void MySystem::CreateUser(std::string email, std::string password, std::string name)
+void MySystem::CreateUser(const std::string &email, const std::string &password, const std::string &name)
 {
-    int idCount = 1;
-    if (allUsers.empty())
+    bool userExists = false;
+
+    for (auto &user : allUsers)
     {
+        if (user.GetEmail() == email)
+        {
+            userExists = true;
+            break;
+        }
+    }
 
-        allUsers.resize(idCount);
-        allUsers[0].SetID(idCount);
-        allUsers[0].SetEmail(email);
-        allUsers[0].SetName(name);
-        allUsers[0].SetPassword(password);
-
-        currentUser = new User;
-        currentUser = &allUsers[0];
-        std::cout << "Usuario Criado!" << std::endl;
+    if (userExists)
+    {
+        std::cout << "Usuario ja existe!" << std::endl;
     }
     else
     {
-        for (auto x : allUsers)
-        {
+        int idCount = allUsers.size() + 1;
+        allUsers.emplace_back();
+        allUsers.back().SetID(idCount);
+        allUsers.back().SetEmail(email);
+        allUsers.back().SetName(name);
+        allUsers.back().SetPassword(password);
 
-            if (x.GetEmail() != email)
-            {
-                idCount++;
-
-                allUsers.resize(idCount);
-                allUsers.back().SetID(idCount);
-                allUsers.back().SetEmail(email);
-                allUsers.back().SetName(name);
-                allUsers.back().SetPassword(password);
-
-                currentUser = new User;
-                currentUser = &allUsers.back();
-                std::cout << "Usuario Criado!" << std::endl;
-            }
-            else
-            {
-                std::cout << "Usuario Ja Existe!" << std::endl;
-            }
-        }
+        currentUser = &allUsers.back();
+        std::cout << "Usuario criado!" << std::endl;
     }
 }
 void MySystem::EnterSystem(std::string email, std::string password)
@@ -58,12 +48,11 @@ void MySystem::EnterSystem(std::string email, std::string password)
         {
             currentUser = &x;
             std::cout << "Logado como " << x.GetEmail() << std::endl;
-        }
-        else
-        {
-            std::cout << "Senha ou Usuario Invalidos!" << std::endl;
+            return;
         }
     }
+
+    std::cout << "Senha ou Usuario Invalidos!" << std::endl;
 }
 
 void MySystem::Disconnect()
@@ -189,16 +178,17 @@ void MySystem::RemoveServer(std::string name)
 
 void MySystem::EnterServer(std::string name)
 {
-    for (auto &x : allServers)
+    for (auto &server : allServers)
     {
-        if (x.GetServerName() == name)
+        if (server.GetServerName() == name)
         {
-            if (x.GetInviteCode() == "")
+            if (server.GetInviteCode() == "")
             {
-                x.GetParticipants().push_back(currentUser->GetID());
-                currentUser->SetCurrentServer(&x);
+                server.GetParticipants().push_back(currentUser->GetID());
+                Server *copiedServer = new Server(server);
+                currentUser->SetCurrentServer(copiedServer);
                 std::cout << "Entrou no servidor com sucesso" << std::endl;
-                currentServer = &x;
+                currentServer = copiedServer;
                 return;
             }
             else
@@ -206,12 +196,13 @@ void MySystem::EnterServer(std::string name)
                 std::string code;
                 std::cout << "Servidor requer código de convite: ";
                 std::cin >> code;
-                if (code == x.GetInviteCode())
+                if (code == server.GetInviteCode())
                 {
-                    x.GetParticipants().push_back(currentUser->GetID());
-                    currentUser->SetCurrentServer(&x);
+                    server.GetParticipants().push_back(currentUser->GetID());
+                    Server *copiedServer = new Server(server);
+                    currentUser->SetCurrentServer(copiedServer);
                     std::cout << "Entrou no servidor com sucesso" << std::endl;
-                    currentServer = &x;
+                    currentServer = copiedServer;
                     return;
                 }
                 else
@@ -361,4 +352,221 @@ void MySystem::ViewAllMessages()
         }
         std::cout << GetUserByID(x.GetAuthor())->GetName() << "< " << timeSent << " >" << x.GetMessage() << std::endl;
     }
+}
+void MySystem::SaveUsers()
+{
+    std::ofstream arquivo("usuarios.txt");
+    if (arquivo.is_open())
+    {
+        arquivo << allUsers.size() << '\n';
+        for (auto &user : allUsers)
+        {
+            arquivo << user.GetID() << '\n';
+            arquivo << user.GetName() << '\n';
+            arquivo << user.GetEmail() << '\n';
+            arquivo << user.GetPassword() << '\n';
+        }
+        arquivo.close();
+        std::cout << "Arquivo 'usuarios.txt' salvo com sucesso." << std::endl;
+    }
+    else
+    {
+        std::cout << "Não foi possível abrir o arquivo 'usuarios.txt'." << std::endl;
+    }
+}
+
+void MySystem::SaveServers()
+{
+    std::ofstream arquivo("servidores.txt");
+    if (arquivo.is_open())
+    {
+        arquivo << allServers.size() << '\n';
+        for (auto &server : allServers)
+        {
+            arquivo << server.GetOwnerID() << '\n';
+            arquivo << server.GetServerName() << '\n';
+            arquivo << server.GetDescription() << '\n';
+            if (server.IsOpen())
+            {
+                arquivo << '\n';
+            }
+            else
+            {
+                arquivo << server.GetInviteCode() << '\n';
+            }
+
+            arquivo << server.GetParticipants().size() << '\n';
+            for (auto &participant : server.GetParticipants())
+            {
+                arquivo << participant << '\n';
+            }
+
+            arquivo << server.GetChannels().size() << '\n';
+            for (auto &channel : server.GetChannels())
+            {
+                arquivo << channel->GetName() << '\n';
+                arquivo << channel->GetType() << '\n';
+
+                std::vector<Message> messages = channel->GetMessages();
+                arquivo << messages.size() << '\n';
+                for (auto &message : messages)
+                {
+                    arquivo << message.GetAuthor() << '\n';
+
+                    std::time_t time = std::chrono::system_clock::to_time_t(message.GetTime());
+                    std::tm *timeInfo = std::localtime(&time);
+                    char buffer[80];
+                    std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", timeInfo);
+                    arquivo << buffer << '\n';
+
+                    arquivo << message.GetMessage() << '\n';
+                }
+            }
+        }
+
+        arquivo.close();
+        std::cout << "Arquivo 'servidores.txt' salvo com sucesso." << std::endl;
+    }
+    else
+    {
+        std::cout << "Não foi possível abrir o arquivo 'servidores.txt'." << std::endl;
+    }
+}
+
+void MySystem::Save()
+{
+    SaveUsers();
+    SaveServers();
+}
+void MySystem::LoadUsers()
+{
+    std::ifstream arquivoUsuarios("usuarios.txt");
+    if (!arquivoUsuarios)
+    {
+        std::cout << "Erro ao abrir o arquivo usuarios.txt." << std::endl;
+        return;
+    }
+
+    int totalUsuarios;
+    arquivoUsuarios >> totalUsuarios;
+
+    for (int i = 0; i < totalUsuarios; i++)
+    {
+        int id;
+        std::string nome;
+        std::string email;
+        std::string senha;
+
+        arquivoUsuarios >> id;
+        arquivoUsuarios.ignore();
+        std::getline(arquivoUsuarios, nome);
+        std::getline(arquivoUsuarios, email);
+        std::getline(arquivoUsuarios, senha);
+
+        allUsers.push_back(User(id, nome, email, senha));
+    }
+
+    arquivoUsuarios.close();
+}
+void MySystem::LoadServers()
+{
+    std::ifstream arquivoServidores("servidores.txt");
+    if (!arquivoServidores)
+    {
+        std::cout << "Erro ao abrir o arquivo servidores.txt." << std::endl;
+        return;
+    }
+
+    int totalServidores;
+    arquivoServidores >> totalServidores;
+
+    for (int i = 0; i < totalServidores; i++)
+    {
+        int ownerID;
+        std::string nome;
+        std::string descricao;
+        std::string codigoConvite;
+        int totalParticipantes;
+
+        arquivoServidores >> ownerID;
+        arquivoServidores.ignore();
+        std::getline(arquivoServidores, nome);
+        std::getline(arquivoServidores, descricao);
+        std::getline(arquivoServidores, codigoConvite);
+        arquivoServidores >> totalParticipantes;
+
+        std::vector<int> participantes;
+        for (int j = 0; j < totalParticipantes; j++)
+        {
+            int userID;
+            arquivoServidores >> userID;
+            participantes.push_back(userID);
+        }
+
+        allServers.push_back(Server(ownerID, nome, descricao, codigoConvite, participantes));
+
+        int totalCanais;
+        arquivoServidores >> totalCanais;
+
+        for (int j = 0; j < totalCanais; j++)
+        {
+            std::string nomeCanal;
+            std::string tipoCanal;
+            int totalMensagens;
+
+            arquivoServidores.ignore(); // Ignorar o caractere de nova linha
+            std::getline(arquivoServidores, nomeCanal);
+            std::getline(arquivoServidores, tipoCanal);
+            arquivoServidores >> totalMensagens;
+
+            if (tipoCanal == "TextChannel")
+            {
+                TextChannel *textChannel = new TextChannel(nomeCanal, tipoCanal);
+
+                for (int k = 0; k < totalMensagens; k++)
+                {
+                    int idUsuario;
+                    std::chrono::system_clock::time_point dataHora;
+                    std::string conteudo;
+
+                    arquivoServidores >> idUsuario;
+                    arquivoServidores >> dataHora;
+                    arquivoServidores.ignore();
+                    std::getline(arquivoServidores, conteudo);
+
+                    textChannel->NewMessage(Message(dataHora, idUsuario, conteudo));
+                }
+
+                allServers[i].CreateChannel(textChannel->GetName(), "TextChannel");
+            }
+            else if (tipoCanal == "VoiceChannel")
+            {
+                VoiceChannel *voiceChannel = new VoiceChannel(nomeCanal, tipoCanal);
+
+                for (int k = 0; k < totalMensagens; k++)
+                {
+                    int idUsuario;
+                    std::chrono::system_clock::time_point dataHora;
+                    std::string conteudo;
+
+                    arquivoServidores >> idUsuario;
+                    arquivoServidores >> dataHora;
+                    arquivoServidores.ignore();
+                    std::getline(arquivoServidores, conteudo);
+
+                    voiceChannel->NewMessage(Message(dataHora, idUsuario, conteudo));
+                }
+
+                allServers[i].CreateChannel(voiceChannel->GetName(), "VoiceChannel");
+            }
+        }
+    }
+
+    arquivoServidores.close();
+}
+
+void MySystem::Load()
+{
+    LoadUsers();
+    LoadServers();
 }

@@ -1,5 +1,4 @@
 #include <iostream>
-#include <fstream>
 #include <sstream>
 #include <vector>
 #include <string>
@@ -10,124 +9,132 @@ int main()
 {
     MySystem system;
 
-    std::ifstream inputFile("../data/commands.txt");
-    if (!inputFile)
-    {
-        std::cout << "Erro ao abrir o arquivo commands.txt" << std::endl;
-        return 1;
-    }
+    std::string command;
+    std::cout << "Bem-vindo ao sistema!" << std::endl;
+    system.Load();
 
-    std::string line;
-    while (std::getline(inputFile, line))
+    while (true)
     {
-        std::istringstream iss(line);
-        std::string command;
-        iss >> command;
+        std::cout << "Digite um comando: ";
+        std::getline(std::cin, command);
 
-        if (command == "create-user")
+        std::istringstream iss(command);
+        std::string cmd;
+        iss >> cmd;
+
+        if (cmd == "create-user")
         {
             std::string email, password, name;
             iss >> email >> password >> name;
             system.CreateUser(email, password, name);
+            system.Save();
         }
-        else if (command == "login")
+        else if (cmd == "login")
         {
             std::string email, password;
             iss >> email >> password;
             system.EnterSystem(email, password);
         }
-        else if (command == "quit")
+        else if (cmd == "quit")
         {
             system.ExitSystem();
+            system.Save();
             break;
         }
-        else if (command == "disconnect")
+        else if (cmd == "disconnect")
         {
             system.Disconnect();
         }
-        else if (command == "create-server")
+        else if (cmd == "create-server")
         {
             std::string name;
             iss >> name;
             system.CreateServer(name);
+            system.Save();
         }
-        else if (command == "set-server-desc")
+        else if (cmd == "set-server-desc")
         {
             std::string name, description;
             iss >> name;
             std::getline(iss, description);
             description = description.substr(1, description.length() - 2);
             system.ChangeDescription(name, description);
+            system.Save();
         }
-        else if (command == "set-server-invitecode")
+        else if (cmd == "set-server-invitecode")
         {
             std::string name, inviteCode;
             iss >> name >> inviteCode;
             system.ChangeInviteCode(name, inviteCode);
+            system.Save();
         }
-        else if (command == "list-servers")
+        else if (cmd == "list-servers")
         {
             system.GetAllServers();
         }
-        else if (command == "remove-server")
+        else if (cmd == "remove-server")
         {
             std::string name;
             iss >> name;
             system.RemoveServer(name);
+            system.Save();
         }
-        else if (command == "enter-server")
+        else if (cmd == "enter-server")
         {
             std::string name;
             iss >> name;
             system.EnterServer(name);
+            system.Save();
         }
-        else if (command == "leave-server")
+        else if (cmd == "leave-server")
         {
             system.LeaveServer();
+            system.Save();
         }
-        else if (command == "list-participants")
+        else if (cmd == "list-participants")
         {
             system.GetAllUsersServer();
         }
-        else if (command == "create-channel")
+        else if (cmd == "create-channel")
         {
             std::string name, type;
             iss >> name >> type;
             system.GetCurrentServer()->CreateChannel(name, type);
+            system.Save();
         }
-        else if (command == "list-channels")
+        else if (cmd == "list-channels")
         {
             system.GetCurrentServer()->ListAllChannels();
         }
-
-        else if (command == "enter-channel")
+        else if (cmd == "enter-channel")
         {
             std::string name;
             iss >> name;
             system.EnterChannel(name);
+            system.Save();
         }
-        else if (command == "leave-channel")
+        else if (cmd == "leave-channel")
         {
             system.LeaveChannel();
+            system.Save();
         }
-        else if (command == "send-message")
+        else if (cmd == "send-message")
         {
             std::string message;
             std::getline(iss, message);
             message = message.substr(1, message.length() - 2);
             system.SendMessage(message);
+            system.Save();
         }
-        else if (command == "list-messages")
+        else if (cmd == "list-messages")
         {
             system.ViewAllMessages();
         }
         else
         {
-            std::cout << "Comando inválido: " << command << std::endl;
+            std::cout << "Comando inválido: " << cmd << std::endl;
         }
     }
-
-    inputFile.close();
 
     return 0;
 }

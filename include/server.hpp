@@ -29,7 +29,16 @@ public:
      * @param name nome do servidor
      * @param description descrição do servidor
      * @param inviteCode código de acesso do servidor
+     * @param participantsID vetor de participantes do servidor
      */
+    Server(int ownerID, std::string name, std::string description, std::string inviteCode, std::vector<int> participantsID)
+    {
+        this->ownerID = ownerID;
+        this->name = name;
+        this->description = description;
+        this->inviteCode = inviteCode;
+        this->participantsID = participantsID;
+    }
     Server(int ownerID, std::string name, std::string description, std::string inviteCode)
     {
         this->ownerID = ownerID;
@@ -133,6 +142,13 @@ public:
     {
         return channels;
     }
+    /**
+     * @brief função que pergunta se um servidor está aberta ou fechado em relação ao seu código de convite
+     *
+     * @return true caso esteja aberto
+     * @return false caso esteja fechado
+     */
+    bool IsOpen() const;
 };
 
 #endif
